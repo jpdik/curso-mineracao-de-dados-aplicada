@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<title>Buscador de Notícias</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+    body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
+</style>
+<body class="w3-light-grey w3-content" style="max-width:1600px">
+    
+    <!-- !PAGE CONTENT! -->
+    <div class="w3-main">
+        
+        <!-- Header -->
+        <header id="portfolio">
+            <div class="w3-container w3-margin-sides w3-center">
+                <h1 class="w3-center title"><b><a href="{{url_for('home')}}">Buscador de Notícias</a></b></h1>
+                
+                <form action="{{url_for('home')}}">
+                    <div class="w3-section">
+                        <label class="w3-left">Pesquisa</label>
+                        <input class="w3-input w3-border" type="text" name="query" value="{{query}}"required>
+                    </div>
+                    <button type="submit" class="w3-button w3-center w3-black w3-margin-bottom"><i class="fa fa-paper-plane w3-margin-right"></i>Pesquisar</button>
+                </form>
+                
+            </div>
+        </header>
+        
+        <div class="w3-bottombar"></div>
+        
+        {% if query %}
+        <div class="w3-row-padding">
+            <div class="w3-third w3-container w3-margin-top">
+                <h3 class="w3-left"><b>Resultado da pesquisa</b></h3>
+            </div>
+        </div>
+        {% endif %}
+        
+        {% for topic in result['topics'] %}
+        <div class="w3-section w3-padding-16">
+            <div class="w3-row-padding">
+                <div class="w3-third w3-container w3-margin-top">
+                    <h2 class="w3-left"><b>Noticia {{loop.index}}</b></h2>
+                </div>
+            </div>
+            <div class="w3-row-padding">
+                <div class="w3-container w3-margin-top">
+                    <span class="w3-margin-right">Tags:</span> 
+                    {% for term in topic['terms'] %}
+                    <a class="w3-button w3-white" href="{{url_for('home', query=term[0])}}"><i class="fa fa-map-pin w3-margin-right"></i>{{term[0]}}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <!-- First Photo Grid-->
+        <div class="w3-row-padding">
+            <a href="{{ topic['top_docs'][0]['link'] }}">
+                <div class="w3-container w3-margin-bottom w3-margin w3-margin-sides w3-center w3-padding-32">
+                    <img src="{{topic['top_docs'][0]['img_url']}}" alt="Noticia" style="width:100%" class="w3-hover-opacity">
+                    <div class="w3-container w3-white w3-padding-32">
+                        <p><b>{{ topic['top_docs'][0]['titulo'] }}</b></p>
+                        <p>{{ topic['top_docs'][0]['descricao']|truncate(1024, True)  }}</p>      
+                    </div>
+                </div>
+            </a>
+        </div>
+        
+        <div class="w3-row-padding">
+            <div class="w3-third w3-container w3-margin-bottom">
+                <h4 class="w3-left"><b>Tópicos Relacionados</b></h4>
+            </div>
+        </div>
+        
+        <div class="w3-row-padding">
+            {% for docs in topic['top_docs'][1:] %}
+            <a href="{{ docs['link'] }}">
+                <div class="w3-third w3-container w3-margin-bottom">
+                    <img src="{{docs['img_url']}}" alt="Norway" style="width:100%" class="w3-hover-opacity">
+                    <div class="w3-container w3-white">
+                        <p><b>{{docs['titulo']}}</b></p>
+                        <p>{{ docs['descricao']|truncate(400, True)  }}</p>
+                    </div> 
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+        
+        <div class="w3-bottombar"></div>
+        
+        {% endfor %}
+        
+        <div class="w3-container w3-padding-large w3-grey">
+            <h4 id="contact"><b class="w3-text-light-grey">Seu buscador da cidade!</b></h4>
+            {% if not query %}
+            <h2 class="w3-container w3-margin-sides w3-center w3-text-light-grey">Busque uma noticia de forma rápida e clara, juntamente com tópicos relacionados.</h2>
+            {% endif %}
+            <div class="w3-row-padding w3-center w3-padding-24" style="margin:0 -16px">
+                <div class="w3-third w3-dark-grey">
+                    <p><i class="fa fa-envelope w3-xxlarge w3-text-light-grey"></i></p>
+                    <p>jpmdik@gmail.com</p>
+                </div>
+                <div class="w3-third w3-teal">
+                    <p><i class="fa fa-map-marker w3-xxlarge w3-text-light-grey"></i></p>
+                    <p>Barbacena, MG, Brasil</p>
+                </div>
+                <div class="w3-third w3-dark-grey">
+                    <p><i class="fa fa-phone w3-xxlarge w3-text-light-grey"></i></p>
+                    <p>(32) 9 9153-5024</p>
+                </div>
+            </div>
+            <hr class="w3-opacity">
+        </div>
+        
+        <!-- Footer -->
+        <footer class="w3-container w3-padding-32 w3-dark-grey">
+            <div class="w3-row-padding">
+                <div class="w3-third">
+                    <h3>Sobre</h3>
+                    <p>Me chamo João Paulo de Melo. Sou desenvolvedor Full-Stack. Atualmente estou buscando conhecimentos na área de Data Science.</p>
+                    <p>Meu <a href="https://www.linkedin.com/in/jp-dev/" target="_blank">Linkedin.</a></p>
+                </div>
+                
+                <div class="w3-third">
+                    <h3></h3>
+                </div>
+                
+                <div class="w3-third">
+                    <h3>Mais Buscados</h3>
+                    <p>
+                        {% for tag in top_10 %}
+                        {% if loop.index == 1 %}
+                        <a href="{{url_for('home', query=tag[0])}}"><span class="w3-tag w3-black w3-margin-bottom">{{tag[0]}}</span></a>
+                        {% else %}
+                        <a href="{{url_for('home', query=tag[0])}}"><span class="w3-tag w3-grey w3-small w3-margin-bottom">{{tag[0]}}</span></a>
+                        {% endif %}
+                        {% endfor %}
+                    </p>
+                </div>
+                
+            </div>
+        </footer>
+        
+        <div class="w3-black w3-center w3-padding-24">Developed by <a href="https://www.jpmdik.com.br" title="JP Inc" target="_blank" class="w3-hover-opacity">JP Inc.</a></div>
+        
+        <!-- End page content -->
+    </div>
+    
+</body>
+</html>
